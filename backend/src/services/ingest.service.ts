@@ -25,15 +25,16 @@ export class IngestService {
       return unixVenv;
     }
 
-    // 2. Fallback to env variable if defined
+    // 2. Use env variable if defined (e.g. PYTHON_CMD=python3 on Railway)
     if (process.env.PYTHON_CMD) {
-      console.log(`[Ingest] Virtualenv not found. Using PYTHON_CMD from env: ${process.env.PYTHON_CMD}`);
+      console.log(`[Ingest] Using PYTHON_CMD from env: ${process.env.PYTHON_CMD}`);
       return process.env.PYTHON_CMD;
     }
 
-    // 3. Fallback to global python commands
-    console.log("[Ingest] Virtualenv python not found. Falling back to global 'python'");
-    return "python";
+    // 3. On Linux/Railway, python3 is the standard. On Windows, python.
+    const fallback = process.platform === "win32" ? "python" : "python3";
+    console.log(`[Ingest] Virtualenv not found. Falling back to global '${fallback}'`);
+    return fallback;
   }
 
   async triggerIngest() {
