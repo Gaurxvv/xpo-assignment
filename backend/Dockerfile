@@ -1,10 +1,8 @@
 # Use official Node + Python combined image
 FROM nikolaik/python-nodejs:python3.12-nodejs20
 
-# Railway copies only the /backend folder contents here (Root Directory = /backend)
-# So /app/ contains: prisma/, src/, dist/, package.json etc. directly
+# Copy full repo so scraper/ is accessible at /app/scraper/
 WORKDIR /app
-
 COPY . .
 
 # Install Python scraper dependencies globally
@@ -19,12 +17,16 @@ RUN pip install --no-cache-dir \
     requests==2.31.0 \
     numpy==1.26.4
 
-# Install Node dependencies and build TypeScript
+# Switch to backend folder for Node deps
+# /app/backend/package-lock.json exists here
+WORKDIR /app/backend
 RUN npm ci
 RUN npm run build
 
-# Expose port
 EXPOSE 3001
 
-# WORKDIR is /app, so prisma/schema.prisma and dist/server.js are found correctly
+# WORKDIR is /app/backend:
+#   prisma/schema.prisma → /app/backend/prisma/schema.prisma ✅
+#   dist/server.js       → /app/backend/dist/server.js ✅
+#   ../scraper/main.py   → /app/scraper/main.py ✅
 CMD ["sh", "-c", "npx prisma generate && node dist/server.js"]
