@@ -3,6 +3,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLink, Calendar, BookOpen, AlertTriangle, X } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 interface Article {
   id: string;
@@ -35,7 +36,7 @@ export default function ClusterDetails({ clusterId, onClose }: ClusterDetailsPro
     queryKey: ["cluster", clusterId],
     queryFn: async () => {
       if (!clusterId) throw new Error("No cluster ID selected");
-      const res = await fetch(`http://localhost:3001/clusters/${clusterId}`);
+      const res = await fetch(`${API_BASE_URL}/clusters/${clusterId}`);
       if (!res.ok) {
         throw new Error("Failed to fetch cluster details");
       }

@@ -21,6 +21,7 @@ import {
 import { useTheme } from "@/components/ThemeContext";
 import Timeline from "@/components/Timeline";
 import ClusterDetails from "@/components/ClusterDetails";
+import { API_BASE_URL } from "@/lib/api";
 
 interface ClusterSummary {
   id: string;
@@ -58,7 +59,7 @@ export default function Dashboard() {
   const { data: clusters = [], isLoading: isClustersLoading, error: clustersError } = useQuery<ClusterSummary[]>({
     queryKey: ["clusters"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3001/clusters");
+      const res = await fetch(`${API_BASE_URL}/clusters`);
       if (!res.ok) throw new Error("Failed to fetch clusters");
       return res.json();
     },
@@ -68,7 +69,7 @@ export default function Dashboard() {
   // 2. Ingest Trigger Mutation
   const triggerIngestMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("http://localhost:3001/ingest/trigger", {
+      const res = await fetch(`${API_BASE_URL}/ingest/trigger`, {
         method: "POST",
       });
       if (!res.ok) {
@@ -90,7 +91,7 @@ export default function Dashboard() {
   const { data: jobStatus } = useQuery<IngestJobStatus>({
     queryKey: ["ingestJob", activeJobId],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:3001/ingest/status/${activeJobId}`);
+      const res = await fetch(`${API_BASE_URL}/ingest/status/${activeJobId}`);
       if (!res.ok) throw new Error("Failed to fetch job status");
       return res.json();
     },
