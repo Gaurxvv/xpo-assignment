@@ -31,7 +31,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="News Pulse Ingestion Scraper & Clustering Pipeline")
     parser.add_argument("--job-id", type=str, help="IngestJob UUID to update in the database")
     parser.add_argument("--days", type=int, default=30, help="Number of recent days to fetch articles for clustering")
-    parser.add_argument("--threshold", type=float, default=0.20, help="Similarity threshold for Agglomerative Clustering (0.0 to 1.0)")
+    parser.add_argument("--threshold", type=float, default=0.15, help="Similarity threshold for Agglomerative Clustering (0.0 to 1.0)")
     return parser.parse_args()
 
 def main():
