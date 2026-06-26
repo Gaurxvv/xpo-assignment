@@ -5,7 +5,7 @@ nixPkgs = ["nodejs_20", "python312", "python312Packages.pip"]
 cmds = [
   "npm install",
   "npm run build",
-  "pip install -r ../scraper/requirements.txt"
+  "python3 -m pip install --break-system-packages trafilatura beautifulsoup4 feedparser scikit-learn nltk psycopg2-binary python-dotenv requests numpy"
 ]
 
 [start]
