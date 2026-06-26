@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "python312", "python312Packages.pip"]
+
+[phases.build]
+cmds = [
+  "npm install",
+  "npm run build",
+  "pip install -r ../scraper/requirements.txt"
+]
+
+[start]
+cmd = "npx prisma db push && node dist/server.js"
