@@ -26,5 +26,8 @@ RUN npm run build
 # Expose port
 EXPOSE 3001
 
-# Push DB schema (explicit path) and start server
-CMD ["sh", "-c", "npx prisma db push --schema=/app/backend/prisma/schema.prisma && node /app/backend/dist/server.js"]
+# Set working directory for runtime
+WORKDIR /app/backend
+
+# Generate Prisma client and start server
+CMD ["sh", "-c", "npx prisma generate && node dist/server.js"]
