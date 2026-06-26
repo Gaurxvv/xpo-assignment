@@ -12,8 +12,22 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // CORS configuration
-// Allow all origins for dev/assessment, or configure specific origin in prod
-app.use(cors());
+// Allows requests from the frontend (Vercel URL in prod, localhost in dev)
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3050",
+  process.env.FRONTEND_URL,        // e.g. https://xpo-assignment.vercel.app
+].filter(Boolean) as string[];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. curl, Postman, Railway health checks)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+}));
 
 // Parse JSON request bodies
 app.use(express.json());
