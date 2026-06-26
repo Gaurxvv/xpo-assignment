@@ -1,0 +1,47 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  title       String
+  summary     String?  @db.Text
+  content     String?  @db.Text
+  url         String   @unique
+  source      String
+  publishedAt DateTime
+  clusterId   String?
+  cluster     Cluster? @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+model Cluster {
+  id           String    @id @default(uuid())
+  label        String
+  startTime    DateTime
+  endTime      DateTime
+  articleCount Int       @default(0)
+  articles     Article[]
+  createdAt    DateTime  @default(now())
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model IngestJob {
+  id          String    @id @default(uuid())
+  status      JobStatus @default(PENDING)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  message     String?
+}
